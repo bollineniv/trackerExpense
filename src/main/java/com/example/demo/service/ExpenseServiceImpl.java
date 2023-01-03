@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Expense;
+
 import com.example.demo.repository.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,9 +15,12 @@ import java.util.Optional;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService{
-
+ 
     @Autowired
     ExpenseRepository expenseRepository;
+
+    @Autowired
+    UsersService usersService;
     @Override
     public List<Expense> findAll() {
         return expenseRepository.findAll();
@@ -34,6 +37,9 @@ public class ExpenseServiceImpl implements ExpenseService{
 //        System.out.println("enum: "+test);
 ////        categoryenum test = categoryenum.valueOf(String.valueOf(expense.getCategory()));
 //        System.out.println("val: "+expense.getCategory());
+
+        System.out.println("val: "+usersService.getLoggedInUser());
+        expense.setUser(usersService.getLoggedInUser());
         Expense expenseResponse = expenseRepository.save(expense);
 
         return expenseResponse;
@@ -50,7 +56,8 @@ public class ExpenseServiceImpl implements ExpenseService{
 
     @Override
     public void deleteExpense(long id) {
-        expenseRepository.deleteById(id);
+        Expense expense = getExpense(id);
+        expenseRepository.delete(expense);
 //        return expenseResponse;
     }
 

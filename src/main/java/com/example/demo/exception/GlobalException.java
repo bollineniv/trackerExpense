@@ -70,4 +70,16 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         return new ResponseEntity<Object>(errorBody,HttpStatus.BAD_REQUEST);
 
     }
+
+    @ExceptionHandler(UserExistException.class)
+    public ResponseEntity<ExceptionObject> handleUserExistException(UserExistException ex, WebRequest web){
+        ExceptionObject exceptionObject = new ExceptionObject();
+
+        exceptionObject.setStatusCode(HttpStatus.CONFLICT.value());
+        exceptionObject.setErrorDescription((ex.getMessage()));
+        exceptionObject.setTimestamp(new Date());
+
+        return new ResponseEntity<ExceptionObject>(exceptionObject,HttpStatus.CONFLICT);
+    }
+
 }
