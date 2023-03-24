@@ -3,18 +3,22 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Expense;
 import com.example.demo.service.ExpenseService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.sql.Date;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin("*")
 @RestController
@@ -24,6 +28,7 @@ public class ExpenseController {
 
     @Autowired
     ExpenseService expenseService;
+
 
     @GetMapping("/getAllExpense")
     public ResponseEntity<List<Expense>> getAllExpense(){
@@ -49,8 +54,10 @@ public class ExpenseController {
     }
 
     @PostMapping("/addExpense")
-    public ResponseEntity<Expense> addExpense(@Valid @RequestBody Expense expense){
+    public ResponseEntity<Expense> addExpense(@Valid @RequestBody Expense expense) throws MessagingException, IOException {
+        System.out.println("tr");
         Expense expenseResponse = expenseService.addExpense(expense);
+//        System.out.println("fillees:: "+file);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("/{id}").buildAndExpand(expenseResponse.getId()).toUri();
@@ -110,5 +117,22 @@ public class ExpenseController {
         List<Expense> expenses = expenseService.getExpenseBetweenDates(startDate, endDate,page).toList();
 
         return new ResponseEntity<List<Expense>>(expenses,HttpStatus.OK);
+    }
+
+    @GetMapping("/expense/writeToCSV")
+    public ResponseEntity<Resource> exportToCSV(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.addHeader("Content-Disposition", "attachment;filename=\"expense.csv\"");
+
+        expenseService.writeExpenseToCSV(response.getWriter());
+
+        return new ResponseEntity<Resource>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<String> deleteAll(){
+        int deletedExpenseCount = expenseService.deleteAllExpenses();
+
+        return new ResponseEntity<>("Expenses Deleted : "+deletedExpenseCount,HttpStatus.OK);
     }
 }

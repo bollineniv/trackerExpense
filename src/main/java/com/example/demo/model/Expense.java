@@ -60,5 +60,10 @@ public class Expense {
     @JsonIgnore
     private Users user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="userFiles_id", nullable = true )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private FilesModel file;
 }
 

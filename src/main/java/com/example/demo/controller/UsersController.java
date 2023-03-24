@@ -23,22 +23,22 @@ public class UsersController {
 //        return new ResponseEntity<Users>(userResponse, HttpStatus.CREATED);
 //    }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<Users> getUser(@PathVariable Long id){
-        Users userResponse = usersService.getUser(id);
+    @GetMapping("/profile")
+    public ResponseEntity<Users> getUser(){
+        Users userResponse = usersService.getUser();
 
         return new ResponseEntity<Users>(userResponse,HttpStatus.OK);
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<Users> updateUser(@RequestBody UserModel user, @PathVariable Long id){
-        Users userResponse = usersService.updateUser(user,id);
+    @PutMapping("/profile")
+    public ResponseEntity<Users> updateUser(@RequestBody UserModel user){
+        Users userResponse = usersService.updateUser(user);
         return new ResponseEntity<Users>(userResponse, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
-        usersService.deleteUser(id);
+    @DeleteMapping("/deactivate")
+    public ResponseEntity<HttpStatus> deleteUser(){
+        usersService.deleteUser();
         return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
     }
 }

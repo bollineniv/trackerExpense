@@ -19,24 +19,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-//public class CustomUserDetailsService implements UserDetailsService {
-public class CustomUserDetailsService implements AuthenticationProvider {
+public class CustomUserDetailsService implements UserDetailsService {
+//public class CustomUserDetailsService implements AuthenticationProvider {
 
-    public CustomUserDetailsService() {
-    }
+//    public CustomUserDetailsService() {
+//    }
 
     @Autowired
     private UsersRepository usersRepository;
 
     private PasswordEncoder passwordEncoder;
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 //        System.out.println("yyyy");
-//        Users existingUser =  usersRepository.findByEmail(email).orElseThrow(()->
-//                                    new UsernameNotFoundException("User not found: "+email));
-//        return new org.springframework.security.core.userdetails.User(existingUser.getEmail(), existingUser.getPassword(), new ArrayList<>());
-//    }
+        Users existingUser =  usersRepository.findByEmail(email).orElseThrow(()->
+                                    new UsernameNotFoundException("User not found: "+email));
+        return new org.springframework.security.core.userdetails.User(existingUser.getEmail(), existingUser.getPassword(), new ArrayList<>());
+    }
 
 //    @Override
 //    public Authentication authenticate_old(Authentication authentication) throws AuthenticationException {
@@ -71,28 +71,28 @@ public class CustomUserDetailsService implements AuthenticationProvider {
 //        }
 //    }
 //*******************************
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Users user;
-        String username = authentication.getName();
-        String password = authentication.getCredentials().toString();
-
-        user = usersRepository.findByEmail(username)
-                .orElseThrow(()-> new RuntimeException("email not found: "+username));
-
-        if(password.equals(user.getPassword())){
-//        if(passwordEncoder.matches(password,user.getPassword())){
-            return new UsernamePasswordAuthenticationToken(username,password,new ArrayList<>());
-        }
-        else{
-            throw new RuntimeException("Password mismatch");
-        }
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
-    }
+//    @Override
+//    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+//        Users user;
+//        String username = authentication.getName();
+//        String password = authentication.getCredentials().toString();
+//
+//        user = usersRepository.findByEmail(username)
+//                .orElseThrow(()-> new RuntimeException("email not found: "+username));
+//
+//        if(password.equals(user.getPassword())){
+////        if(passwordEncoder.matches(password,user.getPassword())){
+//            return new UsernamePasswordAuthenticationToken(username,password,new ArrayList<>());
+//        }
+//        else{
+//            throw new RuntimeException("Password mismatch");
+//        }
+//    }
+//
+//    @Override
+//    public boolean supports(Class<?> authentication) {
+//        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+//    }
 
 
 }

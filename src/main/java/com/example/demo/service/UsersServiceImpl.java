@@ -39,13 +39,14 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
-    public Users getUser(Long id) {
-      return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not exists:"+id));
+    public Users getUser() {
+        Long userId = getLoggedInUser().getId();
+      return userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not exists:"+userId));
     }
 
     @Override
-    public Users updateUser(UserModel user, Long id) {
-        Users existingUser = getUser(id);
+    public Users updateUser(UserModel user) {
+        Users existingUser = getUser();
         existingUser.setName(user.getName() !=null ? user.getName() : existingUser.getName());
         existingUser.setUsername(user.getUsername() !=null ? user.getUsername() : existingUser.getUsername());
         existingUser.setEmail(user.getEmail()!=null ? user.getEmail() : existingUser.getEmail());
@@ -55,8 +56,8 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
-    public void deleteUser(Long id) {
-        Users user = getUser(id);
+    public void deleteUser() {
+        Users user = getUser();
         userRepository.delete(user);
     }
 

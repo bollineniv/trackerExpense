@@ -6,11 +6,11 @@ import com.example.demo.model.Users;
 public interface UsersService {
 
     Users createUser(UserModel user);
-    Users getUser(Long id);
+    Users getUser();
 
-    Users updateUser(UserModel user, Long id);
+    Users updateUser(UserModel user);
 
-    void deleteUser(Long id);
+    void deleteUser();
 
     String getUsername(String email);
 
